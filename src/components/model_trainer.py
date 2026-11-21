@@ -41,7 +41,47 @@ class ModelTrainer:
                 "Ada Boost":AdaBoostRegressor(),
                 "Cat Boost":CatBoostRegressor(verbose=False)
             }
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models)
+
+            params = {
+                "Linear Regression": {},
+                "Decision Tree": {
+                    'criterion': ['squared_error', 'absolute_error', 'poisson'],
+                    'splitter': ['best', 'random'],
+                    'max_features': ['sqrt', 'log2']
+                },
+                "K Nearest Neighbors": {
+                    'n_neighbors': [3, 5, 7, 9, 11],
+                    'weights': ['uniform', 'distance']
+                },
+                "Random Forest": {
+                    'criterion': ['squared_error', 'poisson'],
+                    'max_features': ['sqrt', 'log2', None],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "XGBoost": {
+                    'learning_rate': [.1, .01, .05, .001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Gradient Boosting": {
+                    'loss': ['squared_error', 'huber', 'absolute_error'],
+                    'learning_rate': [.1, .01, .05, .001],
+                    'subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],
+                    'max_features': ['sqrt', 'log2'],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Ada Boost": {
+                    'learning_rate': [.1, .01, 0.5, .001],
+                    'loss': ['linear', 'square', 'exponential'],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Cat Boost": {
+                    'depth': [6, 8, 10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                }
+            }
+
+            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models,param=params)
             
             best_model_score = max(sorted(model_report.values()))
             best_model_name = list(model_report.keys())[
@@ -50,7 +90,7 @@ class ModelTrainer:
             best_model = models[best_model_name]
 
             if best_model_score<0.6:
-                raise CustomException("No best model found")
+                raise CustomException("No best model found",sys)
             logging.info(f"Best found model on both training and testing dataset")
 
             save_object(
