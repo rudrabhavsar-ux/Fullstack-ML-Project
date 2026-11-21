@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Predict a math score - Exam Performance Indicator{% endblock %}
+
+{% block content %}
+<section class="wrap hero">
+    <div class="hero-copy">
+        <h1>What will this student score in math?</h1>
+        <p class="lede">
+            Enter their reading and writing scores and a few background details.
+            A trained model returns an estimated math score out of 100.
+        </p>
+        <a class="button" href="{{ url_for('predict_data') }}">Start a prediction</a>
+    </div>
+
+    <figure class="marked-paper">
+        <dl class="paper-lines">
+            <div><dt>Reading score</dt><dd>72</dd></div>
+            <div><dt>Writing score</dt><dd>74</dd></div>
+            <div><dt>Test preparation</dt><dd>Completed</dd></div>
+        </dl>
+        <div class="grade" aria-hidden="true">
+            <svg viewBox="0 0 160 120" focusable="false">
+                <path pathLength="1" d="M28 34 C 52 8, 120 6, 142 40 C 160 70, 128 110, 80 110 C 34 110, 6 80, 20 46 C 30 22, 80 4, 128 20" />
+            </svg>
+            <span class="grade-num">71</span>
+        </div>
+        <figcaption>Sample result. Your numbers will differ.</figcaption>
+    </figure>
+</section>
+
+<section class="band">
+    <div class="wrap steps">
+        <h2>How it works</h2>
+        <ol>
+            <li>
+                <h3>Enter the details</h3>
+                <p>Choose the student’s background and type in their reading and writing scores.</p>
+            </li>
+            <li>
+                <h3>The model estimates</h3>
+                <p>A model trained on past student results turns those inputs into a prediction.</p>
+            </li>
+            <li>
+                <h3>Read the result</h3>
+                <p>You get a predicted math score out of 100, marked on the page.</p>
+            </li>
+        </ol>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,495 @@
+/* ==========================================================
+   Exam Performance Indicator
+   Look: graph paper, navy ink, one red-pen mark for the result.
+   ========================================================== */
+
+:root {
+  --paper: #f4f7fb;
+  --grid: #e1e9f4;
+  --grid-strong: #cfdbeb;
+  --sheet: #ffffff;
+  --ink: #15233f;
+  --ink-soft: #52617d;
+  --edge: #7d8da8;
+  --pen: #d8372a;
+  --blue: #2a5bd7;
+
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+
+  --page-width: 1080px;
+  --radius: 4px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 106.25%; /* 17px base */
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* graph paper: small squares plus a heavier line every 5 squares */
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--blue);
+}
+
+.wrap {
+  width: min(var(--page-width), calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.lede {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: var(--ink-soft);
+  max-width: 40ch;
+}
+
+/* ==========================================================
+   Header and footer
+   ========================================================== */
+
+.site-header,
+.site-footer {
+  background: var(--sheet);
+  padding: 0.9rem max(1rem, calc((100% - var(--page-width)) / 2));
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.site-header nav a {
+  padding-block: 0.2rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.site-header nav a:hover {
+  color: var(--ink);
+}
+
+.site-header nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.site-footer {
+  border-top: 2px solid var(--ink);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* ==========================================================
+   Buttons and focus
+   ========================================================== */
+
+.button {
+  display: inline-block;
+  margin-top: 1.75rem;
+  padding: 0.8rem 1.5rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--sheet);
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.button:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+a:focus-visible,
+.button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ==========================================================
+   The red-pen grade (the one memorable element)
+   ========================================================== */
+
+.grade {
+  display: grid;
+  place-items: center;
+  width: 10rem;
+  aspect-ratio: 4 / 3;
+}
+
+.grade > * {
+  grid-area: 1 / 1;
+}
+
+.grade svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.grade path {
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-circle 900ms ease-out 250ms forwards;
+}
+
+@keyframes draw-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.grade-num {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: 4.75rem;
+  line-height: 1;
+  color: var(--pen);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grade path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .button {
+    transition: none;
+  }
+}
+
+/* ==========================================================
+   Home (index.html)
+   ========================================================== */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 3rem;
+  align-items: center;
+  padding-block: 4rem 3.5rem;
+}
+
+.marked-paper {
+  margin: 0;
+  padding: 1.5rem;
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--grid-strong);
+  transform: rotate(1.5deg);
+}
+
+.paper-lines {
+  margin: 0;
+}
+
+.paper-lines div {
+  display: flex;
+  justify-content: space-between;
+  padding-block: 0.45rem;
+  border-bottom: 1px solid var(--grid-strong);
+}
+
+.paper-lines dt {
+  color: var(--ink-soft);
+}
+
+.paper-lines dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.marked-paper .grade {
+  margin: 1.25rem 0 0.25rem auto;
+}
+
+.marked-paper figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.band {
+  background: var(--sheet);
+  border-block: 2px solid var(--ink);
+}
+
+.steps {
+  padding-block: 2.5rem 3rem;
+}
+
+.steps ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  counter-increment: step;
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--ink);
+}
+
+.steps li::before {
+  content: counter(step) ".";
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.steps li p {
+  margin-top: 0.35rem;
+  color: var(--ink-soft);
+}
+
+/* ==========================================================
+   Predict (home.html)
+   ========================================================== */
+
+.predict {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  padding-block: 3rem 4rem;
+}
+
+.sheet {
+  padding: 2rem;
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+}
+
+.sheet h1 {
+  font-size: clamp(1.9rem, 3.4vw, 2.4rem);
+}
+
+.sheet .lede {
+  margin-top: 0.5rem;
+  font-size: 1.05rem;
+}
+
+fieldset {
+  margin: 1.75rem 0 0;
+  padding: 0.75rem 0 0;
+  border: 0;
+  border-top: 2px solid var(--ink);
+}
+
+legend {
+  margin-left: -0.5rem;
+  padding-inline: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--ink);
+  background-color: var(--sheet);
+  border: 2px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+select:focus,
+input[type="number"]:focus {
+  border-color: var(--blue);
+}
+
+.sheet .button {
+  width: 100%;
+}
+
+/* Answer panel */
+
+.answer {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1.75rem;
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--grid-strong);
+}
+
+.answer h2 {
+  font-size: 1.25rem;
+}
+
+.answer p {
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+}
+
+.answer-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.answer .grade,
+.grade-empty {
+  margin: 1.25rem auto;
+}
+
+.grade-empty {
+  width: 10rem;
+  aspect-ratio: 4 / 3;
+  border: 2px dashed var(--edge);
+  border-radius: 50%;
+}
+
+.answer-note {
+  text-align: center;
+}
+
+/* ==========================================================
+   Small screens
+   ========================================================== */
+
+@media (max-width: 860px) {
+  .hero,
+  .predict {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    gap: 2.5rem;
+    padding-block: 2.5rem;
+  }
+
+  .marked-paper {
+    max-width: 24rem;
+  }
+
+  .steps ol {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .answer {
+    position: static;
+  }
+
+  /* show a fresh result above the form so it is not missed */
+  .answer--filled {
+    order: -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .sheet {
+    padding: 1.25rem;
+  }
+
+  .field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

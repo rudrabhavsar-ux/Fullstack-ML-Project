@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Predict - Exam Performance Indicator{% endblock %}
+
+{% block content %}
+{% set has_result = results is defined and results is not none %}
+
+<div class="wrap predict">
+    <section class="sheet">
+        <h1>Predict a math score</h1>
+        <p class="lede">Fill in every field. Scores are out of 100.</p>
+
+        <form action="{{ url_for('predict_data') }}" method="post">
+            <fieldset>
+                <legend>Background</legend>
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option selected disabled value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="ethnicity">Race or ethnicity</label>
+                        <select id="ethnicity" name="ethnicity" required>
+                            <option selected disabled value="">Select a group</option>
+                            <option value="group A">Group A</option>
+                            <option value="group B">Group B</option>
+                            <option value="group C">Group C</option>
+                            <option value="group D">Group D</option>
+                            <option value="group E">Group E</option>
+                        </select>
+                    </div>
+
+                    <div class="field field--wide">
+                        <label for="parental_level_of_education">Parental level of education</label>
+                        <select id="parental_level_of_education" name="parental_level_of_education" required>
+                            <option selected disabled value="">Select a level</option>
+                            <option value="associate's degree">Associate's degree</option>
+                            <option value="bachelor's degree">Bachelor's degree</option>
+                            <option value="high school">High school</option>
+                            <option value="master's degree">Master's degree</option>
+                            <option value="some college">Some college</option>
+                            <option value="some high school">Some high school</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="lunch">Lunch type</label>
+                        <select id="lunch" name="lunch" required>
+                            <option selected disabled value="">Select lunch type</option>
+                            <option value="free/reduced">Free or reduced</option>
+                            <option value="standard">Standard</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="test_preparation_course">Test preparation course</label>
+                        <select id="test_preparation_course" name="test_preparation_course" required>
+                            <option selected disabled value="">Select one</option>
+                            <option value="none">None</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Scores</legend>
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="reading_score">Reading score</label>
+                        <input id="reading_score" type="number" name="reading_score"
+                               placeholder="0 to 100" min="0" max="100" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="writing_score">Writing score</label>
+                        <input id="writing_score" type="number" name="writing_score"
+                               placeholder="0 to 100" min="0" max="100" required>
+                    </div>
+                </div>
+            </fieldset>
+
+            <button class="button" type="submit">Predict math score</button>
+        </form>
+    </section>
+
+    <aside class="answer{% if has_result %} answer--filled{% endif %}" aria-live="polite">
+        {% if has_result %}
+            {% set score = [[results, 0]|max, 100]|min %}
+            <p class="answer-label">Predicted math score</p>
+            <div class="grade">
+                <svg viewBox="0 0 160 120" aria-hidden="true" focusable="false">
+                    <path pathLength="1" d="M28 34 C 52 8, 120 6, 142 40 C 160 70, 128 110, 80 110 C 34 110, 6 80, 20 46 C 30 22, 80 4, 128 20" />
+                </svg>
+                <span class="grade-num">{{ score|round|int }}</span>
+            </div>
+            <p class="answer-note">out of 100. Change any field and predict again.</p>
+        {% else %}
+            <h2>Your result appears here</h2>
+            <div class="grade-empty" aria-hidden="true"></div>
+            <p class="answer-note">Fill in the form, then select Predict math score.</p>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}
