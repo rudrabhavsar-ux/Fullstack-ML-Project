@@ -1,0 +1,8 @@
+-r requirements.txt
+xgboost
+catboost
+matplotlib
+seaborn
+ipykernel
+mlflow
+-e .
